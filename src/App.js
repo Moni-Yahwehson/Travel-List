@@ -16,15 +16,19 @@ export default function App() {
   }
 
   function handleDeleteItem(id) {
-    setItems(items => items.filter(item => item.id !== id));
+    setItems((items) => items.filter((item) => item.id !== id));
     
+  }
+
+  function handleToggleItem(id) {
+    setItems((items) => items.map((item) => item.id === id ? {...item, packed: !item.packed} : item));
   }
 
   return(
   <div className="app">
     <Logo />
     <Form onAddItems={handleAddItems}/>
-    <PackingList items={items} onDeleteItem={handleDeleteItem} />
+    <PackingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem} />
     <Stats/>
   </div>
   )
@@ -64,7 +68,7 @@ function Form({onAddItems}) {
   return (
   <form className="add-form" onSubmit={handleSubmit}>
     <h3>What do you need for your amazing trip?</h3>
-    <select value={quantity} onChange={(e)=>setQuantity(+e.target.value)}>
+    <select value={quantity} onChange={(e) => setQuantity(+e.target.value)}>
       {Array.from({length:20}, (_, i) => i + 1).map((num) => (<option value = {num} key= {num} >{num}</option>))}
     </select>
     <input type="text" placeholder="Item..." value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -74,25 +78,26 @@ function Form({onAddItems}) {
   );
 }
 
-function PackingList({items, onDeleteItem}) {
+function PackingList({items, onDeleteItem, onToggleItem}) {
   return (
 
     <div className="list">  
       <ul >
-      {items.map((item)=> (<Item  item={item} onDeleteItem={onDeleteItem} key={item.id} />))}
+      {items.map((item)=> (<Item  item={item} onDeleteItem={onDeleteItem} onToggleItem={onToggleItem} key={item.id} />))}
       </ul>
     </div>
 
   )
 }
 
-function Item({item, onDeleteItem}) {
+function Item({item, onDeleteItem, onToggleItem}) {
   return(
     <li>
+      <input type="checkbox" value={item.packed} onChange={() => onToggleItem(item.id)} />
       <span style={item.packed ? {textDecoration: 'line-through'} : {}}>
         {item.quantity} {item.description}
       </span>
-      <button onClick={onDeleteItem(item.id)}>❌</button>
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   )
   
