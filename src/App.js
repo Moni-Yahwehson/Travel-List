@@ -107,6 +107,8 @@ function Item({item, onDeleteItem, onToggleItem}) {
 
 function Stats({items}) {
 
+  if(!items.length) return (<p className="stats"><em>Start adding items to your packing list</em></p>)
+
    
 
   const numItems = items.length;
